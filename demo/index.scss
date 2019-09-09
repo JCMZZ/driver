@@ -1,0 +1,30 @@
+@import '../src/driver.scss';
+/* 修改提示盒子的背景色 */
+div#driver-popover-item.tip_box{
+    background: rgb(62, 62, 64);
+    color: #fff;
+}
+div#driver-popover-item .driver-popover-tip.top{
+    border-bottom-color: rgb(62, 62, 64);
+}
+div#driver-popover-item .driver-popover-tip.bottom{
+    border-top-color: rgb(62, 62, 64);
+}
+div#driver-popover-item .driver-popover-tip.left{
+    border-right-color: rgb(62, 62, 64);
+}
+div#driver-popover-item .driver-popover-tip.right{
+    border-left-color: rgb(62, 62, 64);
+}
+/* 描述 */
+.driver-popover-description {
+    color: silver !important;
+}
+/* 指示标按钮 */
+.indication_next_btn {
+    outline: none;
+    background: rgb(121, 189, 40);
+    color: rbg(62, 62, 64);
+    font-weight: bold;
+    height: 25px !important;
+}
