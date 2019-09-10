@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Indication</title>
+  <link rel="stylesheet" href="./driver.min.css">
+  <style>
+    /* 修改提示盒子的背景色 */
+    div#driver-popover-item.tip_box {
+      background: rgb(62, 62, 64);
+      color: #fff;
+    }
+
+    div#driver-popover-item .driver-popover-tip.top {
+      border-bottom-color: rgb(62, 62, 64);
+    }
+
+    div#driver-popover-item .driver-popover-tip.bottom {
+      border-top-color: rgb(62, 62, 64);
+    }
+
+    div#driver-popover-item .driver-popover-tip.left {
+      border-right-color: rgb(62, 62, 64);
+    }
+
+    div#driver-popover-item .driver-popover-tip.right {
+      border-left-color: rgb(62, 62, 64);
+    }
+
+    /* 描述 */
+    .driver-popover-description {
+      color: silver !important;
+    }
+
+    /* 指示标按钮 */
+    .indication_next_btn {
+      outline: none;
+      background: rgb(121, 189, 40);
+      color: rbg(62, 62, 64);
+      font-weight: bold;
+      height: 25px !important;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="first">TEST</button>
+  <button id="second">TEST</button>
+  <button id="third">TEST</button>
+  <script src="./driver.min.js"></script>
+  <script>
+    const driver = new Driver({
+      showRightTopCloseBtn: true,
+      showIndicationButtons: true,
+      className: 'tip_box',
+      nextBtnClassName: 'indication_next_btn',
+      animate: true, // Animate while changing highlighted element
+      opacity: 0.35, // Background opacity (0 means only popovers and without overlay)
+      padding: 5, // Distance of element from around the edges
+      allowClose: true, // Whether clicking on overlay should close or not
+      overlayClickNext: false, // Should it move to next step on overlay click
+      doneBtnText: 'Done', // Text on the final button
+      closeBtnText: 'Close', // Text on the close button for this step
+      nextBtnText: 'Next', // Next button text for this step
+      prevBtnText: 'Previous', // Previous button text for this step
+      showButtons: true, // Do not show control buttons in footer
+      keyboardControl: true, // Allow controlling through keyboard (escape to close, arrow keys to move)
+    });
+    driver.defineSteps([{
+        element: '#first',
+        popover: {
+          title: 'Title on Popover',
+          description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem non repellat ex itaque quo rem officiis necessitatibus quis iste et. Fuga animi dolor quaerat quibusdam modi consequuntur nesciunt omnis repellat?',
+        }
+      },
+      {
+        element: '#second',
+        popover: {
+          title: 'Title on Popover',
+          description: 'Body of the popover',
+        }
+      },
+      {
+        element: '#third',
+        popover: {
+          title: 'Title on Popover',
+          description: 'Body of the popover',
+        }
+      },
+    ]);
+    driver.start();
+  </script>
+</body>
+
+</html>
