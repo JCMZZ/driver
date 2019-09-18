@@ -9,9 +9,14 @@
   <link rel="stylesheet" href="./driver.min.css">
   <style>
     /* 修改提示盒子的背景色 */
+    div#driver-popover-item .driver-popover-tip.top {
+      border-bottom-color: green !important;
+    }
     div#driver-popover-item.tip_box {
-      background: rgb(62, 62, 64);
       color: #fff;
+      background: rgb(62, 62, 64);
+      background: green;
+      color: silver;
     }
 
     div#driver-popover-item .driver-popover-tip.top {
@@ -68,6 +73,9 @@
       prevBtnText: 'Previous', // Previous button text for this step
       showButtons: true, // Do not show control buttons in footer
       keyboardControl: true, // Allow controlling through keyboard (escape to close, arrow keys to move)
+      onHide(){
+        console.log("dddd")
+      }
     });
     driver.defineSteps([{
         element: '#first',

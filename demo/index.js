@@ -15,6 +15,9 @@ const driver = new Driver({
   prevBtnText: 'Previous', // Previous button text for this step
   showButtons: true, // Do not show control buttons in footer
   keyboardControl: true, // Allow controlling through keyboard (escape to close, arrow keys to move)
+  onHide(){
+    console.log('触发');
+  }
 });
 driver.defineSteps([
   {
