@@ -49,7 +49,9 @@ export default class Stage extends Element {
       return;
     }
     this.node.parentElement.removeChild(this.node);
-    this.options.onHide && (this.options.onHide());
+    setTimeout(function(){
+      this.options.onHide && (this.options.onHide());
+    }.bind(this))
   }
 
   /**
