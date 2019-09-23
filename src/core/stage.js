@@ -51,7 +51,7 @@ export default class Stage extends Element {
     this.node.parentElement.removeChild(this.node);
     setTimeout(function(){
       this.options.onHide && (this.options.onHide());
-    }.bind(this))
+    }.bind(this), 500);
   }
 
   /**
