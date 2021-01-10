@@ -1,5 +1,5 @@
-import { ANIMATION_DURATION_MS, ID_OVERLAY, OVERLAY_HTML } from '../common/constants';
-import { createNodeFromString } from '../common/utils';
+import { ANIMATION_DURATION_MS, ID_OVERLAY, OVERLAY_HTML } from '../common/constants'
+import { createNodeFromString } from '../common/utils'
 
 /**
  * Responsible for overlay creation and manipulation i.e.
@@ -12,16 +12,16 @@ export default class Overlay {
    * @param {Document} document
    */
   constructor(options, window, document) {
-    this.options = options;
+    this.options = options
 
-    this.highlightedElement = null;              // currently highlighted dom element (instance of Element)
-    this.lastHighlightedElement = null;          // element that was highlighted before current one
-    this.hideTimer = null;
+    this.highlightedElement = null              // currently highlighted dom element (instance of Element)
+    this.lastHighlightedElement = null          // element that was highlighted before current one
+    this.hideTimer = null
 
-    this.window = window;
-    this.document = document;
+    this.window = window
+    this.document = document
 
-    this.removeNode = this.removeNode.bind(this);
+    this.removeNode = this.removeNode.bind(this)
   }
 
   /**
@@ -29,14 +29,14 @@ export default class Overlay {
    * @private
    */
   attachNode() {
-    let pageOverlay = this.document.getElementById(ID_OVERLAY);
+    let pageOverlay = this.document.getElementById(ID_OVERLAY)
     if (!pageOverlay) {
-      pageOverlay = createNodeFromString(OVERLAY_HTML);
-      document.body.appendChild(pageOverlay);
+      pageOverlay = createNodeFromString(OVERLAY_HTML)
+      document.body.appendChild(pageOverlay)
     }
 
-    this.node = pageOverlay;
-    this.node.style.opacity = '0';
+    this.node = pageOverlay
+    this.node.style.opacity = '0'
 
     if (!this.options.animate) {
       // For non-animation cases remove the overlay because we achieve this overlay by having
@@ -46,7 +46,7 @@ export default class Overlay {
       // transparent and achieve the overlay using the shadow so to make the element below it visible
       // through the stage even if there are stacking issues.
       if (this.node.parentElement) {
-        this.node.parentElement.removeChild(this.node);
+        this.node.parentElement.removeChild(this.node)
       }
     }
   }
@@ -58,40 +58,40 @@ export default class Overlay {
    */
   highlight(element) {
     if (!element || !element.node) {
-      console.warn('Invalid element to highlight. Must be an instance of `Element`');
-      return;
+      console.warn('Invalid element to highlight. Must be an instance of `Element`')
+      return
     }
 
     // If highlighted element is not changed from last time
     if (element.isSame(this.highlightedElement)) {
-      return;
+      return
     }
 
     // There might be hide timer from last time
     // which might be getting triggered
-    this.window.clearTimeout(this.hideTimer);
+    this.window.clearTimeout(this.hideTimer)
 
     // Trigger the hook for highlight started
-    element.onHighlightStarted();
+    element.onHighlightStarted()
 
     // Old element has been deselected
     if (this.highlightedElement && !this.highlightedElement.isSame(this.lastHighlightedElement)) {
-      this.highlightedElement.onDeselected();
+      this.highlightedElement.onDeselected()
     }
 
     // get the position of element around which we need to draw
-    const position = element.getCalculatedPosition();
+    const position = element.getCalculatedPosition()
     if (!position.canHighlight()) {
-      return;
+      return
     }
 
-    this.lastHighlightedElement = this.highlightedElement;
-    this.highlightedElement = element;
+    this.lastHighlightedElement = this.highlightedElement
+    this.highlightedElement = element
 
-    this.show();
+    this.show()
 
     // Element has been highlighted
-    this.highlightedElement.onHighlighted();
+    this.highlightedElement.onHighlighted()
   }
 
   /**
@@ -100,19 +100,19 @@ export default class Overlay {
    */
   show() {
     if (this.node && this.node.parentElement) {
-      return;
+      return
     }
 
-    this.attachNode();
+    this.attachNode()
 
     window.setTimeout(() => {
-      this.node.style.opacity = `${this.options.opacity}`;
-      this.node.style.position = 'fixed';
-      this.node.style.left = '0';
-      this.node.style.top = '0';
-      this.node.style.bottom = '0';
-      this.node.style.right = '0';
-    });
+      this.node.style.opacity = `${this.options.opacity}`
+      this.node.style.position = 'fixed'
+      this.node.style.left = '0'
+      this.node.style.top = '0'
+      this.node.style.bottom = '0'
+      this.node.style.right = '0'
+    })
   }
 
   /**
@@ -121,7 +121,7 @@ export default class Overlay {
    * @public
    */
   getHighlightedElement() {
-    return this.highlightedElement;
+    return this.highlightedElement
   }
 
   /**
@@ -130,7 +130,7 @@ export default class Overlay {
    * @public
    */
   getLastHighlightedElement() {
-    return this.lastHighlightedElement;
+    return this.lastHighlightedElement
   }
 
   /**
@@ -138,32 +138,37 @@ export default class Overlay {
    * @public
    */
   clear(immediate = false) {
+    // 根据onPreventClear的返回值，执行是否退出
+    if (this.options.onPreventClear && this.options.onPreventClear(this.highlightedElement)) {
+      return
+    }
+
     // Callback for when overlay is about to be reset
     if (this.options.onReset) {
-      this.options.onReset(this.highlightedElement);
+      this.options.onReset(this.highlightedElement)
     }
 
     // Deselect the highlighted element if any
     if (this.highlightedElement) {
-      const hideStage = true;
-      this.highlightedElement.onDeselected(hideStage);
+      const hideStage = true
+      this.highlightedElement.onDeselected(hideStage)
     }
 
-    this.highlightedElement = null;
-    this.lastHighlightedElement = null;
+    this.highlightedElement = null
+    this.lastHighlightedElement = null
 
     if (!this.node) {
-      return;
+      return
     }
 
     // Clear any existing timers and remove node
-    this.window.clearTimeout(this.hideTimer);
+    this.window.clearTimeout(this.hideTimer)
 
     if (this.options.animate && !immediate) {
-      this.node.style.opacity = '0';
-      this.hideTimer = this.window.setTimeout(this.removeNode, ANIMATION_DURATION_MS);
+      this.node.style.opacity = '0'
+      this.hideTimer = this.window.setTimeout(this.removeNode, ANIMATION_DURATION_MS)
     } else {
-      this.removeNode();
+      this.removeNode()
     }
   }
 
@@ -173,7 +178,7 @@ export default class Overlay {
    */
   removeNode() {
     if (this.node && this.node.parentElement) {
-      this.node.parentElement.removeChild(this.node);
+      this.node.parentElement.removeChild(this.node)
     }
   }
 
@@ -185,11 +190,11 @@ export default class Overlay {
   refresh() {
     // If no highlighted element, cancel the refresh
     if (!this.highlightedElement) {
-      return;
+      return
     }
 
     // Reposition the stage and show popover
-    this.highlightedElement.showPopover();
-    this.highlightedElement.showStage();
+    this.highlightedElement.showPopover()
+    this.highlightedElement.showStage()
   }
 }

@@ -17,6 +17,7 @@
       "off"
     ],
     "max-len": "off",
-    "no-multi-spaces": "off"
+    "no-multi-spaces": "off",
+    "semi": ["error", "never"]
   }
 }

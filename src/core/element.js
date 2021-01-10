@@ -3,9 +3,9 @@ import {
   CLASS_DRIVER_HIGHLIGHTED_ELEMENT,
   CLASS_FIX_STACKING_CONTEXT,
   CLASS_POSITION_RELATIVE,
-} from '../common/constants';
-import { getStyleProperty } from '../common/utils';
-import Position from './position';
+} from '../common/constants'
+import { getStyleProperty } from '../common/utils'
+import Position from './position'
 
 /**
  * Wrapper around DOMElements to enrich them
@@ -31,14 +31,14 @@ export default class Element {
     window,
     document,
   } = {}) {
-    this.node = node;
-    this.document = document;
-    this.window = window;
-    this.options = options;
-    this.overlay = overlay;
-    this.popover = popover;
-    this.stage = stage;
-    this.animationTimeout = null;
+    this.node = node
+    this.document = document
+    this.window = window
+    this.options = options
+    this.overlay = overlay
+    this.popover = popover
+    this.stage = stage
+    this.animationTimeout = null
   }
 
   /**
@@ -47,17 +47,17 @@ export default class Element {
    * @public
    */
   isInView() {
-    let top = this.node.offsetTop;
-    let left = this.node.offsetLeft;
-    const width = this.node.offsetWidth;
-    const height = this.node.offsetHeight;
+    let top = this.node.offsetTop
+    let left = this.node.offsetLeft
+    const width = this.node.offsetWidth
+    const height = this.node.offsetHeight
 
-    let el = this.node;
+    let el = this.node
 
     while (el.offsetParent) {
-      el = el.offsetParent;
-      top += el.offsetTop;
-      left += el.offsetLeft;
+      el = el.offsetParent
+      top += el.offsetTop
+      left += el.offsetLeft
     }
 
     return (
@@ -65,7 +65,7 @@ export default class Element {
       && left >= this.window.pageXOffset
       && (top + height) <= (this.window.pageYOffset + this.window.innerHeight)
       && (left + width) <= (this.window.pageXOffset + this.window.innerWidth)
-    );
+    )
   }
 
   /**
@@ -73,11 +73,11 @@ export default class Element {
    * @private
    */
   scrollManually() {
-    const elementRect = this.node.getBoundingClientRect();
-    const absoluteElementTop = elementRect.top + this.window.pageYOffset;
-    const middle = absoluteElementTop - (this.window.innerHeight / 2);
+    const elementRect = this.node.getBoundingClientRect()
+    const absoluteElementTop = elementRect.top + this.window.pageYOffset
+    const middle = absoluteElementTop - (this.window.innerHeight / 2)
 
-    this.window.scrollTo(0, middle);
+    this.window.scrollTo(0, middle)
   }
 
   /**
@@ -87,23 +87,23 @@ export default class Element {
   bringInView() {
     // If the node is not there or already is in view
     if (!this.node || this.isInView()) {
-      return;
+      return
     }
 
     // If browser does not support scrollIntoView
     if (!this.node.scrollIntoView) {
-      this.scrollManually();
-      return;
+      this.scrollManually()
+      return
     }
 
     try {
       this.node.scrollIntoView(this.options.scrollIntoViewOptions || {
         behavior: 'instant',
         block: 'center',
-      });
+      })
     } catch (e) {
       // `block` option is not allowed in older versions of firefox, scroll manually
-      this.scrollManually();
+      this.scrollManually()
     }
   }
 
@@ -114,20 +114,20 @@ export default class Element {
    * @return {Position}
    */
   getCalculatedPosition() {
-    const body = this.document.body;
-    const documentElement = this.document.documentElement;
-    const window = this.window;
+    const body = this.document.body
+    const documentElement = this.document.documentElement
+    const window = this.window
 
-    const scrollTop = this.window.pageYOffset || documentElement.scrollTop || body.scrollTop;
-    const scrollLeft = window.pageXOffset || documentElement.scrollLeft || body.scrollLeft;
-    const elementRect = this.node.getBoundingClientRect();
+    const scrollTop = this.window.pageYOffset || documentElement.scrollTop || body.scrollTop
+    const scrollLeft = window.pageXOffset || documentElement.scrollLeft || body.scrollLeft
+    const elementRect = this.node.getBoundingClientRect()
 
     return new Position({
       top: elementRect.top + scrollTop,
       left: elementRect.left + scrollLeft,
       right: elementRect.left + scrollLeft + elementRect.width,
       bottom: elementRect.top + scrollTop + elementRect.height,
-    });
+    })
   }
 
   /**
@@ -136,7 +136,7 @@ export default class Element {
    * @public
    */
   getPopover() {
-    return this.popover;
+    return this.popover
   }
 
   /**
@@ -145,19 +145,19 @@ export default class Element {
    * @public
    */
   onDeselected(hideStage = false) {
-    this.hidePopover();
+    this.hidePopover()
 
     if (hideStage) {
-      this.hideStage();
+      this.hideStage()
     }
 
-    this.removeHighlightClasses();
+    this.removeHighlightClasses()
 
     // If there was any animation in progress, cancel that
-    this.window.clearTimeout(this.animationTimeout);
+    this.window.clearTimeout(this.animationTimeout)
 
     if (this.options.onDeselected) {
-      this.options.onDeselected(this);
+      this.options.onDeselected(this)
     }
   }
 
@@ -169,10 +169,10 @@ export default class Element {
    */
   isSame(element) {
     if (!element || !element.node) {
-      return false;
+      return false
     }
 
-    return element.node === this.node;
+    return element.node === this.node
   }
 
   /**
@@ -181,7 +181,7 @@ export default class Element {
    */
   onHighlightStarted() {
     if (this.options.onHighlightStarted) {
-      this.options.onHighlightStarted(this);
+      this.options.onHighlightStarted(this)
     }
   }
 
@@ -190,20 +190,20 @@ export default class Element {
    * @public
    */
   onHighlighted() {
-    const highlightedElement = this;
+    const highlightedElement = this
     if (!highlightedElement.isInView()) {
-      highlightedElement.bringInView();
+      highlightedElement.bringInView()
     }
 
     // Show the popover and stage once the item has been
     // brought in the view, this would allow us to handle
     // the cases where the container has scroll overflow
-    this.showPopover();
-    this.showStage();
-    this.addHighlightClasses();
+    this.showPopover()
+    this.showStage()
+    this.addHighlightClasses()
 
     if (this.options.onHighlighted) {
-      this.options.onHighlighted(this);
+      this.options.onHighlighted(this)
     }
   }
 
@@ -212,12 +212,12 @@ export default class Element {
    * @private
    */
   removeHighlightClasses() {
-    this.node.classList.remove(CLASS_DRIVER_HIGHLIGHTED_ELEMENT);
-    this.node.classList.remove(CLASS_POSITION_RELATIVE);
+    this.node.classList.remove(CLASS_DRIVER_HIGHLIGHTED_ELEMENT)
+    this.node.classList.remove(CLASS_POSITION_RELATIVE)
 
-    const stackFixes = this.document.querySelectorAll(`.${CLASS_FIX_STACKING_CONTEXT}`);
+    const stackFixes = this.document.querySelectorAll(`.${CLASS_FIX_STACKING_CONTEXT}`)
     for (let counter = 0; counter < stackFixes.length; counter++) {
-      stackFixes[counter].classList.remove(CLASS_FIX_STACKING_CONTEXT);
+      stackFixes[counter].classList.remove(CLASS_FIX_STACKING_CONTEXT)
     }
   }
 
@@ -227,15 +227,15 @@ export default class Element {
    * @private
    */
   addHighlightClasses() {
-    this.node.classList.add(CLASS_DRIVER_HIGHLIGHTED_ELEMENT);
+    this.node.classList.add(CLASS_DRIVER_HIGHLIGHTED_ELEMENT)
 
     // Don't make relative if element already has some position set
     if (this.canMakeRelative()) {
-      this.node.classList.add(CLASS_POSITION_RELATIVE);
+      this.node.classList.add(CLASS_POSITION_RELATIVE)
     }
 
     // Check and re-define the stacking context
-    this.fixStackingContext();
+    this.fixStackingContext()
   }
 
   /**
@@ -244,19 +244,19 @@ export default class Element {
    * @private
    */
   fixStackingContext() {
-    let parentNode = this.node.parentNode;
+    let parentNode = this.node.parentNode
     while (parentNode) {
       if (!parentNode.tagName || parentNode.tagName.toLowerCase() === 'body') {
-        break;
+        break
       }
 
-      const zIndex = getStyleProperty(parentNode, 'z-index');
-      const opacity = parseFloat(getStyleProperty(parentNode, 'opacity'));
-      const transform = getStyleProperty(parentNode, 'transform', true);
-      const transformStyle = getStyleProperty(parentNode, 'transform-style', true);
-      const transformBox = getStyleProperty(parentNode, 'transform-box', true);
-      const filter = getStyleProperty(parentNode, 'filter', true);
-      const perspective = getStyleProperty(parentNode, 'perspective', true);
+      const zIndex = getStyleProperty(parentNode, 'z-index')
+      const opacity = parseFloat(getStyleProperty(parentNode, 'opacity'))
+      const transform = getStyleProperty(parentNode, 'transform', true)
+      const transformStyle = getStyleProperty(parentNode, 'transform-style', true)
+      const transformBox = getStyleProperty(parentNode, 'transform-box', true)
+      const filter = getStyleProperty(parentNode, 'filter', true)
+      const perspective = getStyleProperty(parentNode, 'perspective', true)
 
       // Stacking context gets disturbed if
       // - Parent has z-index
@@ -271,10 +271,10 @@ export default class Element {
         || (filter && filter !== 'none')
         || (perspective && perspective !== 'none')
       ) {
-        parentNode.classList.add(CLASS_FIX_STACKING_CONTEXT);
+        parentNode.classList.add(CLASS_FIX_STACKING_CONTEXT)
       }
 
-      parentNode = parentNode.parentNode;
+      parentNode = parentNode.parentNode
     }
   }
 
@@ -284,12 +284,12 @@ export default class Element {
    * @private
    */
   canMakeRelative() {
-    const currentPosition = this.getStyleProperty('position');
-    const avoidPositionsList = ['absolute', 'fixed', 'relative'];
+    const currentPosition = this.getStyleProperty('position')
+    const avoidPositionsList = ['absolute', 'fixed', 'relative']
 
     // Because if the element has any of these positions, making it
     // relative will break the UI
-    return avoidPositionsList.indexOf(currentPosition) === -1;
+    return avoidPositionsList.indexOf(currentPosition) === -1
   }
 
   /**
@@ -299,7 +299,7 @@ export default class Element {
    * @private
    */
   getStyleProperty(property) {
-    return getStyleProperty(this.node, property);
+    return getStyleProperty(this.node, property)
   }
 
   /**
@@ -307,7 +307,7 @@ export default class Element {
    * @public
    */
   showStage() {
-    this.stage.show(this.getCalculatedPosition());
+    this.stage.show(this.getCalculatedPosition())
   }
 
   /**
@@ -316,7 +316,7 @@ export default class Element {
    * @public
    */
   getNode() {
-    return this.node;
+    return this.node
   }
 
   /**
@@ -324,7 +324,7 @@ export default class Element {
    * @public
    */
   hideStage() {
-    this.stage.hide();
+    this.stage.hide()
   }
 
   /**
@@ -333,10 +333,10 @@ export default class Element {
    */
   hidePopover() {
     if (!this.popover) {
-      return;
+      return
     }
 
-    this.popover.hide();
+    this.popover.hide()
   }
 
   /**
@@ -345,22 +345,22 @@ export default class Element {
    */
   showPopover() {
     if (!this.popover) {
-      return;
+      return
     }
 
-    const showAtPosition = this.getCalculatedPosition();
+    const showAtPosition = this.getCalculatedPosition()
 
     // For first highlight, show it immediately because there won't be any animation
-    let showAfterMs = ANIMATION_DURATION_MS;
+    let showAfterMs = ANIMATION_DURATION_MS
     // If animation is disabled or  if it is the first display, show it immediately
     if (!this.options.animate || !this.overlay.lastHighlightedElement) {
-      showAfterMs = 0;
+      showAfterMs = 0
     }
 
     // @todo remove timeout and handle with CSS
     this.animationTimeout = this.window.setTimeout(() => {
-      this.popover.show(showAtPosition);
-    }, showAfterMs);
+      this.popover.show(showAtPosition)
+    }, showAfterMs)
   }
 
   /**
@@ -369,13 +369,13 @@ export default class Element {
    */
   getFullPageSize() {
     // eslint-disable-next-line prefer-destructuring
-    const body = this.document.body;
-    const html = this.document.documentElement;
+    const body = this.document.body
+    const html = this.document.documentElement
 
     return {
       height: Math.max(body.scrollHeight, body.offsetHeight, html.scrollHeight, html.offsetHeight),
       width: Math.max(body.scrollWidth, body.offsetWidth, html.scrollWidth, html.offsetWidth),
-    };
+    }
   }
 
   /**
@@ -387,6 +387,6 @@ export default class Element {
     return {
       height: Math.max(this.node.scrollHeight, this.node.offsetHeight),
       width: Math.max(this.node.scrollWidth, this.node.offsetWidth),
-    };
+    }
   }
 }

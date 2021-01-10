@@ -1,6 +1,7 @@
-import Driver from '../src/index';
-function getDriver(Fn){
-  Fn = Fn || new Function();
+import Driver from '../src/index'
+
+function getDriver(Fn) {
+  Fn = Fn || new Function()
   const driver = new Driver({
     showRightTopCloseBtn: true,
     showIndicationButtons: true,
@@ -17,22 +18,30 @@ function getDriver(Fn){
     prevBtnText: 'Previous', // Previous button text for this step
     showButtons: true, // Do not show control buttons in footer
     keyboardControl: true, // Allow controlling through keyboard (escape to close, arrow keys to move)
-    onHide: Fn
-  });
-  return driver;
+    onDone: Fn,
+    onPreventClear: (el) => {
+      console.log('el', el)
+      return driver.hasNextStep() && (driver.moveNext() || true)
+    },
+    onIndication: (i) => {
+      console.log(i)
+      driver.start(i)
+    },
+  })
+  return driver
 }
-const driver = getDriver(()=>{
-  const driver = getDriver();
+const driver = getDriver(() => {
+  const driver = getDriver()
   driver.defineSteps([
     {
       element: '#four',
       popover: {
         title: 'Title on Popover',
         description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem non repellat ex itaque quo rem officiis necessitatibus quis iste et. Fuga animi dolor quaerat quibusdam modi consequuntur nesciunt omnis repellat?',
-      }
-    }
-  ]);
-  driver.start();
+      },
+    },
+  ])
+  driver.start()
 })
 
 driver.defineSteps([
@@ -41,21 +50,21 @@ driver.defineSteps([
     popover: {
       title: 'Title on Popover',
       description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem non repellat ex itaque quo rem officiis necessitatibus quis iste et. Fuga animi dolor quaerat quibusdam modi consequuntur nesciunt omnis repellat?',
-    }
+    },
   },
   {
     element: '#second',
     popover: {
       title: 'Title on Popover',
       description: 'Body of the popover',
-    }
+    },
   },
   {
     element: '#third',
     popover: {
       title: 'Title on Popover',
       description: 'Body of the popover',
-    }
-  }
-]);
-driver.start();
+    },
+  },
+])
+driver.start()

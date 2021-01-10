@@ -1,6 +1,6 @@
-import Overlay from './core/overlay';
-import Element from './core/element';
-import Popover from './core/popover';
+import Overlay from './core/overlay'
+import Element from './core/element'
+import Popover from './core/popover'
 import {
   CLASS_CLOSE_BTN,
   CLASS_NEXT_STEP_BTN,
@@ -15,10 +15,10 @@ import {
   SHOULD_ANIMATE_OVERLAY,
   SHOULD_OUTSIDE_CLICK_CLOSE,
   SHOULD_OUTSIDE_CLICK_NEXT,
-  ALLOW_KEYBOARD_CONTROL
-} from './common/constants';
-import Stage from './core/stage';
-import { isDomElement } from './common/utils';
+  ALLOW_KEYBOARD_CONTROL,
+} from './common/constants'
+import Stage from './core/stage'
+import { isDomElement } from './common/utils'
 
 /**
  * Plugin class that drives the plugin
@@ -43,27 +43,28 @@ export default class Driver {
       onReset: () => null,              // When overlay is about to be cleared
       onNext: () => null,               // When next button is clicked
       onPrevious: () => null,           // When previous button is clicked
+      onDone: () => null,           // When the driver is done
       ...options,
-    };
+    }
 
-    this.document = document;
-    this.window = window;
-    this.isActivated = false;
-    this.steps = [];                    // steps to be presented if any
-    this.currentStep = 0;               // index for the currently highlighted step
-    this.currentMovePrevented = false;  // If the current move was prevented
+    this.document = document
+    this.window = window
+    this.isActivated = false
+    this.steps = []                    // steps to be presented if any
+    this.currentStep = 0               // index for the currently highlighted step
+    this.currentMovePrevented = false  // If the current move was prevented
 
-    this.overlay = new Overlay(this.options, window, document);
+    this.overlay = new Overlay(this.options, window, document)
 
-    this.onResize = this.onResize.bind(this);
-    this.onKeyUp = this.onKeyUp.bind(this);
-    this.onClick = this.onClick.bind(this);
-    this.moveNext = this.moveNext.bind(this);
-    this.movePrevious = this.movePrevious.bind(this);
-    this.preventMove = this.preventMove.bind(this);
+    this.onResize = this.onResize.bind(this)
+    this.onKeyUp = this.onKeyUp.bind(this)
+    this.onClick = this.onClick.bind(this)
+    this.moveNext = this.moveNext.bind(this)
+    this.movePrevious = this.movePrevious.bind(this)
+    this.preventMove = this.preventMove.bind(this)
 
     // Event bindings
-    this.bind();
+    this.bind()
   }
 
   /**
@@ -72,7 +73,7 @@ export default class Driver {
    * @public
    */
   getSteps() {
-    return this.steps;
+    return this.steps
   }
 
   /**
@@ -81,7 +82,7 @@ export default class Driver {
    * @public
    */
   setSteps(steps) {
-    this.steps = steps;
+    this.steps = steps
   }
 
   /**
@@ -90,17 +91,17 @@ export default class Driver {
    * @private
    */
   bind() {
-    this.window.addEventListener('resize', this.onResize, false);
-    this.window.addEventListener('keyup', this.onKeyUp, false);
+    this.window.addEventListener('resize', this.onResize, false)
+    this.window.addEventListener('keyup', this.onKeyUp, false)
 
     // Binding both touch and click results in popup getting shown and then immediately get hidden.
     // Adding the check to not bind the click event if the touch is supported i.e. on mobile devices
     // Issue: https://github.com/kamranahmedse/driver.js/issues/150
     if (!('ontouchstart' in document.documentElement)) {
-      this.window.addEventListener('click', this.onClick, false);
+      this.window.addEventListener('click', this.onClick, false)
     }
 
-    this.window.addEventListener('touchstart', this.onClick, false);
+    this.window.addEventListener('touchstart', this.onClick, false)
   }
 
   /**
@@ -111,46 +112,46 @@ export default class Driver {
    */
   onClick(e) {
     if (!this.isActivated || !this.hasHighlightedElement()) {
-      return;
+      return
     }
 
     // Stop the event propagation on click/tap. `onClick` handles
     // both touch and click events – which on some browsers causes
     // the click to close the tour
-    e.stopPropagation();
+    e.stopPropagation()
 
-    const highlightedElement = this.overlay.getHighlightedElement();
-    const popover = this.document.getElementById(ID_POPOVER);
+    const highlightedElement = this.overlay.getHighlightedElement()
+    const popover = this.document.getElementById(ID_POPOVER)
 
-    const clickedHighlightedElement = highlightedElement.node.contains(e.target);
-    const clickedPopover = popover && popover.contains(e.target);
+    const clickedHighlightedElement = highlightedElement.node.contains(e.target)
+    const clickedPopover = popover && popover.contains(e.target)
 
     // Perform the 'Next' operation when clicked outside the highlighted element
     if (!clickedHighlightedElement && !clickedPopover && this.options.overlayClickNext) {
-      this.handleNext();
-      return;
+      this.handleNext()
+      return
     }
 
     // Remove the overlay If clicked outside the highlighted element
     if (!clickedHighlightedElement && !clickedPopover && this.options.allowClose) {
-      this.reset();
-      return;
+      this.reset()
+      return
     }
 
-    const nextClicked = e.target.classList.contains(CLASS_NEXT_STEP_BTN);
-    const indicationNextClicked = e.target.classList.contains(CLASS_INDICATION_NEXT_STEP_BTN);
-    const prevClicked = e.target.classList.contains(CLASS_PREV_STEP_BTN);
-    const closeClicked = e.target.classList.contains(CLASS_CLOSE_BTN);
+    const nextClicked = e.target.classList.contains(CLASS_NEXT_STEP_BTN)
+    const indicationNextClicked = e.target.classList.contains(CLASS_INDICATION_NEXT_STEP_BTN)
+    const prevClicked = e.target.classList.contains(CLASS_PREV_STEP_BTN)
+    const closeClicked = e.target.classList.contains(CLASS_CLOSE_BTN)
 
     if (closeClicked) {
-      this.reset();
-      return;
+      this.reset()
+      return
     }
 
     if (nextClicked || indicationNextClicked) {
-      this.handleNext();
+      this.handleNext()
     } else if (prevClicked) {
-      this.handlePrevious();
+      this.handlePrevious()
     }
   }
 
@@ -161,17 +162,17 @@ export default class Driver {
    */
   onResize() {
     if (!this.isActivated) {
-      return;
+      return
     }
 
-    this.refresh();
+    this.refresh()
   }
 
   /**
    * Refreshes and repositions the popover and the overlay
    */
   refresh() {
-    this.overlay.refresh();
+    this.overlay.refresh()
   }
 
   /**
@@ -182,26 +183,26 @@ export default class Driver {
   onKeyUp(event) {
     // If driver is not active or keyboard control is disabled
     if (!this.isActivated || !this.options.keyboardControl) {
-      return;
+      return
     }
 
     // If escape was pressed and it is allowed to click outside to close
     if (event.keyCode === ESC_KEY_CODE) {
-      this.reset();
-      return;
+      this.reset()
+      return
     }
 
     // If there is no highlighted element or there is a highlighted element
     // without popover or if the popover does not allow buttons - ignore
-    const highlightedElement = this.getHighlightedElement();
+    const highlightedElement = this.getHighlightedElement()
     if (!highlightedElement || !highlightedElement.popover) {
-      return;
+      return
     }
 
     if (event.keyCode === RIGHT_KEY_CODE) {
-      this.handleNext();
+      this.handleNext()
     } else if (event.keyCode === LEFT_KEY_CODE) {
-      this.handlePrevious();
+      this.handlePrevious()
     }
   }
 
@@ -211,14 +212,14 @@ export default class Driver {
    * @public
    */
   movePrevious() {
-    const previousStep = this.steps[this.currentStep - 1];
+    const previousStep = this.steps[this.currentStep - 1]
     if (!previousStep) {
-      this.reset();
-      return;
+      this.reset()
+      return
     }
 
-    this.overlay.highlight(previousStep);
-    this.currentStep -= 1;
+    this.overlay.highlight(previousStep)
+    this.currentStep -= 1
   }
 
   /**
@@ -227,7 +228,7 @@ export default class Driver {
    * @public
    */
   preventMove() {
-    this.currentMovePrevented = true;
+    this.currentMovePrevented = true
   }
 
   /**
@@ -235,19 +236,19 @@ export default class Driver {
    * @private
    */
   handleNext() {
-    this.currentMovePrevented = false;
+    this.currentMovePrevented = false
 
     // Call the bound `onNext` handler if available
-    const currentStep = this.steps[this.currentStep];
+    const currentStep = this.steps[this.currentStep]
     if (currentStep && currentStep.options && currentStep.options.onNext) {
-      currentStep.options.onNext(this.overlay.highlightedElement);
+      currentStep.options.onNext(this.overlay.highlightedElement)
     }
 
     if (this.currentMovePrevented) {
-      return;
+      return
     }
 
-    this.moveNext();
+    this.moveNext()
   }
 
   /**
@@ -255,19 +256,19 @@ export default class Driver {
    * @private
    */
   handlePrevious() {
-    this.currentMovePrevented = false;
+    this.currentMovePrevented = false
 
     // Call the bound `onPrevious` handler if available
-    const currentStep = this.steps[this.currentStep];
+    const currentStep = this.steps[this.currentStep]
     if (currentStep && currentStep.options && currentStep.options.onPrevious) {
-      currentStep.options.onPrevious(this.overlay.highlightedElement);
+      currentStep.options.onPrevious(this.overlay.highlightedElement)
     }
 
     if (this.currentMovePrevented) {
-      return;
+      return
     }
 
-    this.movePrevious();
+    this.movePrevious()
   }
 
   /**
@@ -276,14 +277,14 @@ export default class Driver {
    * @public
    */
   moveNext() {
-    const nextStep = this.steps[this.currentStep + 1];
+    const nextStep = this.steps[this.currentStep + 1]
     if (!nextStep) {
-      this.reset();
-      return;
+      this.reset()
+      return
     }
 
-    this.overlay.highlight(nextStep);
-    this.currentStep += 1;
+    this.overlay.highlight(nextStep)
+    this.currentStep += 1
   }
 
   /**
@@ -291,7 +292,7 @@ export default class Driver {
    * @public
    */
   hasNextStep() {
-    return !!this.steps[this.currentStep + 1];
+    return !!this.steps[this.currentStep + 1]
   }
 
   /**
@@ -299,7 +300,7 @@ export default class Driver {
    * @public
    */
   hasPreviousStep() {
-    return !!this.steps[this.currentStep - 1];
+    return !!this.steps[this.currentStep - 1]
   }
 
   /**
@@ -308,9 +309,9 @@ export default class Driver {
    * @public
    */
   reset(immediate = false) {
-    this.currentStep = 0;
-    this.isActivated = false;
-    this.overlay.clear(immediate);
+    this.overlay.clear(immediate)
+    this.currentStep = 0
+    this.isActivated = false
   }
 
   /**
@@ -319,8 +320,8 @@ export default class Driver {
    * @public
    */
   hasHighlightedElement() {
-    const highlightedElement = this.overlay.getHighlightedElement();
-    return highlightedElement && highlightedElement.node;
+    const highlightedElement = this.overlay.getHighlightedElement()
+    return highlightedElement && highlightedElement.node
   }
 
   /**
@@ -329,7 +330,7 @@ export default class Driver {
    * @public
    */
   getHighlightedElement() {
-    return this.overlay.getHighlightedElement();
+    return this.overlay.getHighlightedElement()
   }
 
   /**
@@ -338,7 +339,7 @@ export default class Driver {
    * @public
    */
   getLastHighlightedElement() {
-    return this.overlay.getLastHighlightedElement();
+    return this.overlay.getLastHighlightedElement()
   }
 
   /**
@@ -347,15 +348,15 @@ export default class Driver {
    * @public
    */
   defineSteps(steps) {
-    this.steps = [];
+    this.steps = []
 
     for (let counter = 0; counter < steps.length; counter++) {
-      const element = this.prepareElementFromStep(steps[counter], steps, counter);
+      const element = this.prepareElementFromStep(steps[counter], steps, counter)
       if (!element) {
-        continue;
+        continue
       }
 
-      this.steps.push(element);
+      this.steps.push(element)
     }
   }
 
@@ -370,35 +371,35 @@ export default class Driver {
    * @private
    */
   prepareElementFromStep(currentStep, allSteps = [], index = 0) {
-    let elementOptions = { ...this.options };
-    let querySelector = currentStep;
+    let elementOptions = { ...this.options }
+    let querySelector = currentStep
 
     // If the `currentStep` is step definition
     // then grab the options and element from the definition
-    const isStepDefinition = typeof currentStep !== 'string' && !isDomElement(currentStep);
+    const isStepDefinition = typeof currentStep !== 'string' && !isDomElement(currentStep)
 
     if (!currentStep || (isStepDefinition && !currentStep.element)) {
-      throw new Error(`Element is required in step ${index}`);
+      throw new Error(`Element is required in step ${index}`)
     }
 
     if (isStepDefinition) {
-      querySelector = currentStep.element;
-      elementOptions = { ...this.options, ...currentStep };
+      querySelector = currentStep.element
+      elementOptions = { ...this.options, ...currentStep }
     }
 
     // If the given element is a query selector or a DOM element?
-    const domElement = isDomElement(querySelector) ? querySelector : this.document.querySelector(querySelector);
+    const domElement = isDomElement(querySelector) ? querySelector : this.document.querySelector(querySelector)
     if (!domElement) {
-      console.warn(`Element to highlight ${querySelector} not found`);
-      return null;
+      console.warn(`Element to highlight ${querySelector} not found`)
+      return null
     }
 
-    let popover = null;
+    let popover = null
     if (elementOptions.popover && elementOptions.popover.title) {
       const mergedClassNames = [
         this.options.className,
         elementOptions.popover.className,
-      ].filter(c => c).join(' ');
+      ].filter(c => c).join(' ')
 
       const popoverOptions = {
         ...elementOptions,
@@ -408,13 +409,13 @@ export default class Driver {
         currentIndex: index,
         isFirst: index === 0,
         isLast: allSteps.length === 0 || index === allSteps.length - 1, // Only one item or last item
-      };
+      }
 
-      popover = new Popover(popoverOptions, this.window, this.document, this.overlay, this);
+      popover = new Popover(popoverOptions, this.window, this.document, this.overlay, this)
     }
 
-    const stageOptions = { ...elementOptions };
-    const stage = new Stage(stageOptions, this.window, this.document);
+    const stageOptions = { ...elementOptions }
+    const stage = new Stage(stageOptions, this.window, this.document)
 
     return new Element({
       node: domElement,
@@ -424,7 +425,7 @@ export default class Driver {
       overlay: this.overlay,
       window: this.window,
       document: this.document,
-    });
+    })
   }
 
   /**
@@ -434,12 +435,12 @@ export default class Driver {
    */
   start(index = 0) {
     if (!this.steps || this.steps.length === 0) {
-      throw new Error('There are no steps defined to iterate');
+      throw new Error('There are no steps defined to iterate')
     }
 
-    this.isActivated = true;
-    this.currentStep = index;
-    this.overlay.highlight(this.steps[index]);
+    this.isActivated = true
+    this.currentStep = index
+    this.overlay.highlight(this.steps[index])
   }
 
   /**
@@ -448,13 +449,13 @@ export default class Driver {
    * @public
    */
   highlight(selector) {
-    this.isActivated = true;
+    this.isActivated = true
 
-    const element = this.prepareElementFromStep(selector);
+    const element = this.prepareElementFromStep(selector)
     if (!element) {
-      return;
+      return
     }
 
-    this.overlay.highlight(element);
+    this.overlay.highlight(element)
   }
 }

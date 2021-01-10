@@ -15,10 +15,10 @@ export default class Position {
     right = 0,
     bottom = 0,
   } = {}) {
-    this.left = left;
-    this.right = right;
-    this.top = top;
-    this.bottom = bottom;
+    this.left = left
+    this.right = right
+    this.top = top
+    this.bottom = bottom
   }
 
   /**
@@ -27,6 +27,6 @@ export default class Position {
    * @public
    */
   canHighlight() {
-    return this.left < this.right && this.top < this.bottom;
+    return this.left < this.right && this.top < this.bottom
   }
 }

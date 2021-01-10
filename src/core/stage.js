@@ -1,6 +1,6 @@
-import { CLASS_STAGE_NO_ANIMATION, ID_STAGE, STAGE_HTML } from '../common/constants';
-import { createNodeFromString } from '../common/utils';
-import Element from './element';
+import { CLASS_STAGE_NO_ANIMATION, ID_STAGE, STAGE_HTML } from '../common/constants'
+import { createNodeFromString } from '../common/utils'
+import Element from './element'
 
 /**
  * Stage behind the highlighted element to give it a little
@@ -13,11 +13,11 @@ export default class Stage extends Element {
    * @param {Document} document
    */
   constructor(options, window, document) {
-    super();
+    super()
 
-    this.options = options;
-    this.window = window;
-    this.document = document;
+    this.options = options
+    this.window = window
+    this.document = document
   }
 
   /**
@@ -25,18 +25,18 @@ export default class Stage extends Element {
    * @private
    */
   attachNode() {
-    let stage = this.document.getElementById(ID_STAGE);
+    let stage = this.document.getElementById(ID_STAGE)
     if (!stage) {
-      stage = createNodeFromString(STAGE_HTML);
-      document.body.appendChild(stage);
+      stage = createNodeFromString(STAGE_HTML)
+      document.body.appendChild(stage)
     }
 
-    this.node = stage;
+    this.node = stage
 
     if (!this.options.animate) {
-      this.node.classList.add(CLASS_STAGE_NO_ANIMATION);
+      this.node.classList.add(CLASS_STAGE_NO_ANIMATION)
     } else {
-      this.node.classList.remove(CLASS_STAGE_NO_ANIMATION);
+      this.node.classList.remove(CLASS_STAGE_NO_ANIMATION)
     }
   }
 
@@ -46,12 +46,12 @@ export default class Stage extends Element {
    */
   hide() {
     if (!this.node || !this.node.parentElement) {
-      return;
+      return
     }
-    this.node.parentElement.removeChild(this.node);
-    setTimeout(function(){
-      this.options.onHide && (this.options.onHide());
-    }.bind(this), 500);
+    this.node.parentElement.removeChild(this.node)
+    setTimeout(() => {
+      this.options.onDone()
+    }, 500)
   }
 
   /**
@@ -59,11 +59,11 @@ export default class Stage extends Element {
    * @private
    */
   setInitialStyle() {
-    this.node.style.display = 'block';
-    this.node.style.left = '0';
-    this.node.style.top = '0';
-    this.node.style.bottom = '';
-    this.node.style.right = '';
+    this.node.style.display = 'block'
+    this.node.style.left = '0'
+    this.node.style.top = '0'
+    this.node.style.bottom = ''
+    this.node.style.right = ''
   }
 
   /**
@@ -72,23 +72,23 @@ export default class Stage extends Element {
    * @public
    */
   show(position) {
-    this.attachNode();
+    this.attachNode()
 
-    this.setInitialStyle();
+    this.setInitialStyle()
 
     // Make it two times the padding because, half will be given on left and half on right
-    const requiredPadding = this.options.padding * 2;
+    const requiredPadding = this.options.padding * 2
 
-    const width = (position.right - position.left) + (requiredPadding);
-    const height = (position.bottom - position.top) + (requiredPadding);
+    const width = (position.right - position.left) + (requiredPadding)
+    const height = (position.bottom - position.top) + (requiredPadding)
 
     // Show the stage
-    this.node.style.display = 'block';
-    this.node.style.position = 'absolute';
-    this.node.style.width = `${width}px`;
-    this.node.style.height = `${height}px`;
-    this.node.style.top = `${position.top - (requiredPadding / 2)}px`;
-    this.node.style.left = `${position.left - (requiredPadding / 2)}px`;
-    this.node.style.backgroundColor = this.options.stageBackground;
+    this.node.style.display = 'block'
+    this.node.style.position = 'absolute'
+    this.node.style.width = `${width}px`
+    this.node.style.height = `${height}px`
+    this.node.style.top = `${position.top - (requiredPadding / 2)}px`
+    this.node.style.left = `${position.left - (requiredPadding / 2)}px`
+    this.node.style.backgroundColor = this.options.stageBackground
   }
 }

@@ -4,12 +4,12 @@
  * @return {HTMLElement|Node}   Converted node element
  */
 export const createNodeFromString = (htmlString) => {
-  const div = document.createElement('div');
-  div.innerHTML = htmlString.trim();
+  const div = document.createElement('div')
+  div.innerHTML = htmlString.trim()
 
   // Change this to div.childNodes to support multiple top-level nodes
-  return div.firstChild;
-};
+  return div.firstChild
+}
 
 /**
  * Gets the CSS property from the given element
@@ -20,31 +20,31 @@ export const createNodeFromString = (htmlString) => {
  */
 export const getStyleProperty = (element, propertyName, prefixVendor = false) => {
   if (prefixVendor) {
-    const prefixes = ['', '-webkit-', '-ms-', 'moz-', '-o-'];
+    const prefixes = ['', '-webkit-', '-ms-', 'moz-', '-o-']
     for (let counter = 0; counter < prefixes.length; counter++) {
-      const prefixedProperty = prefixes[counter] + propertyName;
-      const foundValue = getStyleProperty(element, prefixedProperty);
+      const prefixedProperty = prefixes[counter] + propertyName
+      const foundValue = getStyleProperty(element, prefixedProperty)
 
       if (foundValue) {
-        return foundValue;
+        return foundValue
       }
     }
 
-    return '';
+    return ''
   }
 
-  let propertyValue = '';
+  let propertyValue = ''
 
   if (element.currentStyle) {
-    propertyValue = element.currentStyle[propertyName];
+    propertyValue = element.currentStyle[propertyName]
   } else if (document.defaultView && document.defaultView.getComputedStyle) {
     propertyValue = document.defaultView
       .getComputedStyle(element, null)
-      .getPropertyValue(propertyName);
+      .getPropertyValue(propertyName)
   }
 
-  return propertyValue && propertyValue.toLowerCase ? propertyValue.toLowerCase() : propertyValue;
-};
+  return propertyValue && propertyValue.toLowerCase ? propertyValue.toLowerCase() : propertyValue
+}
 
 /**
  * Checks if the passed element is dom object or not
@@ -52,5 +52,5 @@ export const getStyleProperty = (element, propertyName, prefixVendor = false) =>
  * @returns {boolean}
  */
 export const isDomElement = function (element) {
-  return element && typeof element === 'object' && 'nodeType' in element;
-};
+  return element && typeof element === 'object' && 'nodeType' in element
+}

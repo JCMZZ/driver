@@ -856,6 +856,16 @@ declare module 'driver.js' {
        * Is called when the previous element is about to be highlighted
        */
       onPrevious?: (element: Driver.Element) => void;
+
+      /**
+       * Called when the driver is done
+       */
+      onDone?: () => void;
+
+      /**
+       * Called when the driver is clear
+       */
+      onPreventClear?: (element: Driver.Element) => void;
     }
 
     interface ElementOptions extends Driver.DriverOptions {
