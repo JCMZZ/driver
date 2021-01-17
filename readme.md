@@ -4,10 +4,10 @@
   <a href="https://github.com/kamranahmedse/driver.js/blob/master/license">
     <img src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
-  <a href="https://npmjs.org/package/driver.js">
+  <a href="https://npm.cmsun.cn/-/web/detail/driver.js">
     <img src="https://img.shields.io/npm/v/driver.js.svg" alt="version" />
   </a>
-  <a href="https://npmjs.org/package/driver.js">
+  <a href="https://npm.cmsun.cn/-/web/detail/driver.js">
     <img src="https://img.shields.io/npm/dm/driver.js.svg" alt="downloads" />
   </a>
 </p>
@@ -46,6 +46,7 @@ You can install it using `yarn` or `npm`, whatever you prefer.
 ```bash
 yarn add driver.js
 npm install driver.js
+npm install driver.js --registry https://npm.cmsun.cn # 拓展版本
 ```
 Or include it using CDN. If you want a specific version, put it as `driver.js@0.5` in the name
 ```html
@@ -371,19 +372,4 @@ activeElement.getNode();  // Gets the DOM Element behind this element
 **Note –** Do not forget to add `e.stopPropagation()` to the `click` binding that triggers driver.
 
 ![](./demo/images/split.png)
-
-## Contributions
-
-Feel free to submit pull requests, create issues or spread the word.
-
-## Sponsored By
-
-Thanks to [BrowserStack](https://browserstack.com) for sponsoring the compatibility testing needs.
-
-[![BrowserStack](./demo/images/browserstack.png)](https://www.browserstack.com)
-
-## License
-
-MIT &copy; [Kamran Ahmed](https://twitter.com/kamranahmedse)
-
 
