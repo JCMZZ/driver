@@ -1,7 +1,7 @@
 {
   "name": "driver.js",
-  "version": "0.9.7",
-  "description": "A light-weight, no-dependency, vanilla JavaScript library to drive the user's focus across the page",
+  "version": "0.9.1",
+  "description": "fork driver.js，A light-weight, no-dependency, vanilla JavaScript library to drive the user's focus across the page",
   "main": "dist/driver.min.js",
   "types": "types/index.d.ts",
   "scripts": {
@@ -13,9 +13,9 @@
   "bugs": {
     "url": "https://github.com/kamranahmedse/driver.js/issues"
   },
-  "homepage": "https://github.com/kamranahmedse/driver.js#readme",
-  "repository": "https://github.com/kamranahmedse/driver.js",
-  "author": "Kamran Ahmed <kamranahmed.se@gmail.com>",
+  "homepage": "https://github.com/JCMZZ/driver#readme",
+  "repository": "https://github.com/JCMZZ/driver",
+  "author": "ChunMing Jiang<jiangchunmingzz@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.4.5",
